@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import mate.academy.bookstore.model.Book;
 import mate.academy.bookstore.service.BookService;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;git push origin main
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
