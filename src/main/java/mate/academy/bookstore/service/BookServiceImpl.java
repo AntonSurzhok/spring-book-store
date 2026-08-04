@@ -1,3 +1,5 @@
+package mate.academy.bookstore.service;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.model.Book;
