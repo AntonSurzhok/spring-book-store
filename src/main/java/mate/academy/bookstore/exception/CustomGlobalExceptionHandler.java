@@ -36,4 +36,15 @@ public class CustomGlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errors);
     }
+
+    @ExceptionHandler(RegistrationException.class)
+    public ResponseEntity<Map<String, String>> handleRegistrationException(
+            RegistrationException exception) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(response);
+    }
 }
