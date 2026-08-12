@@ -44,7 +44,7 @@ public class CustomGlobalExceptionHandler {
         response.put("message", exception.getMessage());
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.CONFLICT)
                 .body(response);
     }
 }
