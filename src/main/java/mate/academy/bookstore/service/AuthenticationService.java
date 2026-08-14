@@ -1,5 +1,6 @@
 package mate.academy.bookstore.service;
 
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.user.UserRegistrationRequestDto;
 import mate.academy.bookstore.dto.user.UserResponseDto;
@@ -12,8 +13,10 @@ import mate.academy.bookstore.repository.RoleRepository;
 import mate.academy.bookstore.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AuthenticationService {
 
@@ -40,10 +43,10 @@ public class AuthenticationService {
 
         Role userRole = roleRepository.findByName(RoleName.USER)
                 .orElseThrow(() -> new RegistrationException(
-                        "USER role not found"
+                        RoleName.USER + " role not found"
                 ));
 
-        user.getRoles().add(userRole);
+        user.setRoles(Set.of(userRole));
 
         User savedUser = userRepository.save(user);
 
