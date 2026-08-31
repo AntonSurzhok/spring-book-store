@@ -1,7 +1,8 @@
 package mate.academy.bookstore.service;
 
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import mate.academy.bookstore.dto.user.UserLoginRequestDto;
+import mate.academy.bookstore.dto.user.UserLoginResponseDto;
 import mate.academy.bookstore.dto.user.UserRegistrationRequestDto;
 import mate.academy.bookstore.dto.user.UserResponseDto;
 import mate.academy.bookstore.exception.RegistrationException;
@@ -11,12 +12,16 @@ import mate.academy.bookstore.model.RoleName;
 import mate.academy.bookstore.model.User;
 import mate.academy.bookstore.repository.RoleRepository;
 import mate.academy.bookstore.repository.UserRepository;
+import mate.academy.bookstore.security.JwtUtil;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AuthenticationService {
 
@@ -24,7 +29,10 @@ public class AuthenticationService {
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
+    @Transactional
     public UserResponseDto register(
             UserRegistrationRequestDto requestDto
     ) {
@@ -46,10 +54,28 @@ public class AuthenticationService {
                         RoleName.USER + " role not found"
                 ));
 
-        user.setRoles(Set.of(userRole));
+        user.setRoles(java.util.Set.of(userRole));
 
         User savedUser = userRepository.save(user);
 
         return userMapper.toDto(savedUser);
+    }
+
+    public UserLoginResponseDto login(UserLoginRequestDto request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.email(),
+                        request.password()
+                )
+        );
+
+        UserDetails userDetails =
+                (UserDetails) authentication.getPrincipal();
+
+        String token = jwtUtil.generateToken(
+                userDetails.getUsername()
+        );
+
+        return new UserLoginResponseDto(token);
     }
 }
