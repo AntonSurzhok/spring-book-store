@@ -1,5 +1,6 @@
 package mate.academy.bookstore.service;
 
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.user.UserLoginRequestDto;
 import mate.academy.bookstore.dto.user.UserLoginResponseDto;
@@ -16,7 +17,6 @@ import mate.academy.bookstore.security.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +54,7 @@ public class AuthenticationService {
                         RoleName.USER + " role not found"
                 ));
 
-        user.setRoles(java.util.Set.of(userRole));
+        user.setRoles(Set.of(userRole));
 
         User savedUser = userRepository.save(user);
 
@@ -69,11 +69,8 @@ public class AuthenticationService {
                 )
         );
 
-        UserDetails userDetails =
-                (UserDetails) authentication.getPrincipal();
-
         String token = jwtUtil.generateToken(
-                userDetails.getUsername()
+                authentication.getName()
         );
 
         return new UserLoginResponseDto(token);
