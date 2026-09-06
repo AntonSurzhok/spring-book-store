@@ -2,6 +2,7 @@ package mate.academy.bookstore.service;
 
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.category.CategoryDto;
+import mate.academy.bookstore.dto.category.CreateCategoryDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.mapper.CategoryMapper;
 import mate.academy.bookstore.model.Category;
@@ -34,23 +35,27 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto save(CategoryDto categoryDto) {
+    public CategoryDto save(CreateCategoryDto categoryDto) {
         Category category = categoryMapper.toEntity(categoryDto);
-
         Category savedCategory = categoryRepository.save(category);
 
         return categoryMapper.toDto(savedCategory);
     }
 
     @Override
-    public CategoryDto update(Long id, CategoryDto categoryDto) {
+    public CategoryDto update(
+            Long id,
+            CreateCategoryDto categoryDto
+    ) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find category by id: " + id
                 ));
 
-        category.setName(categoryDto.getName());
-        category.setDescription(categoryDto.getDescription());
+        categoryMapper.updateCategoryFromDto(
+                categoryDto,
+                category
+        );
 
         Category updatedCategory = categoryRepository.save(category);
 

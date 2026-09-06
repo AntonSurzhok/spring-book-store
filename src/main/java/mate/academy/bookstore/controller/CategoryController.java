@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.book.BookDto;
 import mate.academy.bookstore.dto.category.CategoryDto;
+import mate.academy.bookstore.dto.category.CreateCategoryDto;
 import mate.academy.bookstore.service.BookService;
 import mate.academy.bookstore.service.CategoryService;
 import org.springframework.data.domain.Page;
@@ -39,7 +40,7 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new category")
     public CategoryDto createCategory(
-            @RequestBody @Valid CategoryDto categoryDto
+            @RequestBody @Valid CreateCategoryDto categoryDto
     ) {
         return categoryService.save(categoryDto);
     }
@@ -63,7 +64,7 @@ public class CategoryController {
     @Operation(summary = "Update category")
     public CategoryDto updateCategory(
             @PathVariable Long id,
-            @RequestBody @Valid CategoryDto categoryDto
+            @RequestBody @Valid CreateCategoryDto categoryDto
     ) {
         return categoryService.update(id, categoryDto);
     }
