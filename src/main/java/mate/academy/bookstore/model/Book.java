@@ -48,7 +48,7 @@ public class Book {
 
     private String coverImage;
 
-    @Column(name = "is_deleted", nullable = false)
+    @Column(nullable = false)
     private boolean isDeleted = false;
 
     @ManyToMany(fetch = FetchType.LAZY)
