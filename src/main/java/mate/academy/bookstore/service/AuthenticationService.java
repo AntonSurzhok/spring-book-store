@@ -10,8 +10,10 @@ import mate.academy.bookstore.exception.RegistrationException;
 import mate.academy.bookstore.mapper.UserMapper;
 import mate.academy.bookstore.model.Role;
 import mate.academy.bookstore.model.RoleName;
+import mate.academy.bookstore.model.ShoppingCart;
 import mate.academy.bookstore.model.User;
 import mate.academy.bookstore.repository.RoleRepository;
+import mate.academy.bookstore.repository.ShoppingCartRepository;
 import mate.academy.bookstore.repository.UserRepository;
 import mate.academy.bookstore.security.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +29,7 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -57,6 +60,11 @@ public class AuthenticationService {
         user.setRoles(Set.of(userRole));
 
         User savedUser = userRepository.save(user);
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(savedUser);
+
+        shoppingCartRepository.save(shoppingCart);
 
         return userMapper.toDto(savedUser);
     }
