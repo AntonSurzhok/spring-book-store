@@ -1,11 +1,9 @@
 package mate.academy.bookstore.dto.cart;
 
 import jakarta.validation.constraints.Min;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class UpdateCartItemRequestDto {
 
     @Min(1)

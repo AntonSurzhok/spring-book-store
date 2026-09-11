@@ -1,10 +1,7 @@
 package mate.academy.bookstore.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import mate.academy.bookstore.dto.cart.AddToCartRequestDto;
 import mate.academy.bookstore.dto.cart.ShoppingCartDto;
 import mate.academy.bookstore.dto.cart.UpdateCartItemRequestDto;
 import mate.academy.bookstore.service.ShoppingCartService;
@@ -20,45 +17,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/cart")
 @RequiredArgsConstructor
+@RequestMapping("/cart")
 @PreAuthorize("hasRole('USER')")
-@Tag(
-        name = "Shopping Cart",
-        description = "Shopping cart management endpoints"
-)
 public class ShoppingCartController {
 
     private final ShoppingCartService shoppingCartService;
 
     @GetMapping
-    @Operation(summary = "Get current user's shopping cart")
-    public ShoppingCartDto getShoppingCart(
-            Authentication authentication
-    ) {
-        return shoppingCartService.getShoppingCart(
-                authentication.getName()
-        );
+    public ShoppingCartDto getShoppingCart(Authentication authentication) {
+        return shoppingCartService.getShoppingCart(authentication.getName());
     }
 
-    @PostMapping
-    @Operation(summary = "Add a book to the shopping cart")
-    public ShoppingCartDto addToCart(
-            Authentication authentication,
-            @Valid @RequestBody AddToCartRequestDto requestDto
+    @PostMapping("/items/{bookId}")
+    public ShoppingCartDto addBookToShoppingCart(
+            @PathVariable Long bookId,
+            Authentication authentication
     ) {
-        return shoppingCartService.addToCart(
+        return shoppingCartService.addBookToShoppingCart(
                 authentication.getName(),
-                requestDto
+                bookId
         );
     }
 
     @PutMapping("/items/{cartItemId}")
-    @Operation(summary = "Update cart item quantity")
     public ShoppingCartDto updateCartItem(
-            Authentication authentication,
             @PathVariable Long cartItemId,
-            @Valid @RequestBody UpdateCartItemRequestDto requestDto
+            @RequestBody @Valid UpdateCartItemRequestDto requestDto,
+            Authentication authentication
     ) {
         return shoppingCartService.updateCartItem(
                 authentication.getName(),
@@ -68,10 +54,9 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping("/items/{cartItemId}")
-    @Operation(summary = "Remove an item from the shopping cart")
     public void deleteCartItem(
-            Authentication authentication,
-            @PathVariable Long cartItemId
+            @PathVariable Long cartItemId,
+            Authentication authentication
     ) {
         shoppingCartService.deleteCartItem(
                 authentication.getName(),
