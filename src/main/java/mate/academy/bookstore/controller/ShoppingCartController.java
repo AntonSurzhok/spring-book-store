@@ -2,8 +2,10 @@ package mate.academy.bookstore.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import mate.academy.bookstore.dto.cart.AddToCartRequestDto;
 import mate.academy.bookstore.dto.cart.ShoppingCartDto;
 import mate.academy.bookstore.dto.cart.UpdateCartItemRequestDto;
+import mate.academy.bookstore.model.User;
 import mate.academy.bookstore.service.ShoppingCartService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -25,19 +27,20 @@ public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
 
     @GetMapping
-    public ShoppingCartDto getShoppingCart(Authentication authentication) {
-        return shoppingCartService.getShoppingCart(authentication.getName());
-    }
-
-    @PostMapping("/items/{bookId}")
-    public ShoppingCartDto addBookToShoppingCart(
-            @PathVariable Long bookId,
+    public ShoppingCartDto getShoppingCart(
             Authentication authentication
     ) {
-        return shoppingCartService.addBookToShoppingCart(
-                authentication.getName(),
-                bookId
-        );
+        User user = (User) authentication.getPrincipal();
+        return shoppingCartService.getShoppingCart(user.getId());
+    }
+
+    @PostMapping
+    public ShoppingCartDto addToCart(
+            @RequestBody @Valid AddToCartRequestDto requestDto,
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        return shoppingCartService.addToCart(user.getId(), requestDto);
     }
 
     @PutMapping("/items/{cartItemId}")
@@ -46,8 +49,10 @@ public class ShoppingCartController {
             @RequestBody @Valid UpdateCartItemRequestDto requestDto,
             Authentication authentication
     ) {
+        User user = (User) authentication.getPrincipal();
+
         return shoppingCartService.updateCartItem(
-                authentication.getName(),
+                user.getId(),
                 cartItemId,
                 requestDto
         );
@@ -58,9 +63,8 @@ public class ShoppingCartController {
             @PathVariable Long cartItemId,
             Authentication authentication
     ) {
-        shoppingCartService.deleteCartItem(
-                authentication.getName(),
-                cartItemId
-        );
+        User user = (User) authentication.getPrincipal();
+
+        shoppingCartService.deleteCartItem(user.getId(), cartItemId);
     }
 }

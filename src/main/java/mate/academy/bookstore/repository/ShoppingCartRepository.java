@@ -13,6 +13,4 @@ public interface ShoppingCartRepository
             "cartItems.book"
     })
     Optional<ShoppingCart> findByUserId(Long userId);
-
-    Optional<ShoppingCart> findByUserEmail(String email);
 }
