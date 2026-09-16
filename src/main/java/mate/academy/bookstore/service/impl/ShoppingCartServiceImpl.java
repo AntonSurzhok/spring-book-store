@@ -67,6 +67,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItem.setQuantity(
                 cartItem.getQuantity() + requestDto.getQuantity()
         );
+
         cartItemRepository.save(cartItem);
 
         return shoppingCartMapper.toDto(shoppingCart);
@@ -106,6 +107,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         shoppingCart.getCartItems().remove(cartItem);
         cartItemRepository.delete(cartItem);
+    }
+
+    @Override
+    @Transactional
+    public void clearCart(Long userId) {
+        ShoppingCart shoppingCart = getCartByUserId(userId);
+        shoppingCart.getCartItems().clear();
     }
 
     @Override
