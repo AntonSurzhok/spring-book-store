@@ -27,6 +27,7 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService shoppingCartService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -57,6 +58,8 @@ public class AuthenticationService {
         user.setRoles(Set.of(userRole));
 
         User savedUser = userRepository.save(user);
+
+        shoppingCartService.createShoppingCart(savedUser);
 
         return userMapper.toDto(savedUser);
     }
