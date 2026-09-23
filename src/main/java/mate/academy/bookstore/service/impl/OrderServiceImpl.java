@@ -60,6 +60,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Order order = new Order();
+        order.setUser(shoppingCart.getUser());
         order.setStatus(OrderStatus.PENDING);
         order.setOrderDate(LocalDateTime.now());
         order.setShippingAddress(requestDto.getShippingAddress());
@@ -85,7 +86,9 @@ public class OrderServiceImpl implements OrderService {
             order.getOrderItems().add(orderItem);
 
             BigDecimal itemTotal = book.getPrice()
-                    .multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+                    .multiply(
+                            BigDecimal.valueOf(cartItem.getQuantity())
+                    );
 
             total = total.add(itemTotal);
         }
@@ -93,6 +96,7 @@ public class OrderServiceImpl implements OrderService {
         order.setTotal(total);
 
         Order savedOrder = orderRepository.save(order);
+
         shoppingCartService.clearCart(userId);
 
         return orderMapper.toDto(savedOrder);
@@ -104,7 +108,8 @@ public class OrderServiceImpl implements OrderService {
             Long userId,
             Pageable pageable
     ) {
-        return orderRepository.findAllByUserId(userId, pageable)
+        return orderRepository
+                .findAllByUserId(userId, pageable)
                 .map(orderMapper::toDto);
     }
 
@@ -141,7 +146,9 @@ public class OrderServiceImpl implements OrderService {
                 )
                 .map(orderItemMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Order item with id " + itemId + " not found"
+                        "Order item with id "
+                                + itemId
+                                + " not found"
                 ));
     }
 
@@ -153,7 +160,9 @@ public class OrderServiceImpl implements OrderService {
     ) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Order with id " + orderId + " not found"
+                        "Order with id "
+                                + orderId
+                                + " not found"
                 ));
 
         order.setStatus(requestDto.getStatus());
@@ -161,10 +170,15 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toDto(order);
     }
 
-    private void verifyOrderOwnership(Long orderId, Long userId) {
+    private void verifyOrderOwnership(
+            Long orderId,
+            Long userId
+    ) {
         orderRepository.findByIdAndUserId(orderId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Order with id " + orderId + " not found"
+                        "Order with id "
+                                + orderId
+                                + " not found"
                 ));
     }
 }

@@ -1,5 +1,7 @@
 package mate.academy.bookstore.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.cart.AddToCartRequestDto;
@@ -22,28 +24,37 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/cart")
 @PreAuthorize("hasRole('USER')")
+@Tag(name = "Shopping Cart", description = "Shopping cart endpoints")
 public class ShoppingCartController {
 
     private final ShoppingCartService shoppingCartService;
 
     @GetMapping
+    @Operation(summary = "Get user's shopping cart")
     public ShoppingCartDto getShoppingCart(
             Authentication authentication
     ) {
         User user = (User) authentication.getPrincipal();
+
         return shoppingCartService.getShoppingCart(user.getId());
     }
 
     @PostMapping
+    @Operation(summary = "Add a book to shopping cart")
     public ShoppingCartDto addToCart(
             @RequestBody @Valid AddToCartRequestDto requestDto,
             Authentication authentication
     ) {
         User user = (User) authentication.getPrincipal();
-        return shoppingCartService.addToCart(user.getId(), requestDto);
+
+        return shoppingCartService.addToCart(
+                user.getId(),
+                requestDto
+        );
     }
 
-    @PutMapping("/items/{cartItemId}")
+    @PutMapping("/cart-items/{cartItemId}")
+    @Operation(summary = "Update cart item quantity")
     public ShoppingCartDto updateCartItem(
             @PathVariable Long cartItemId,
             @RequestBody @Valid UpdateCartItemRequestDto requestDto,
@@ -58,13 +69,17 @@ public class ShoppingCartController {
         );
     }
 
-    @DeleteMapping("/items/{cartItemId}")
+    @DeleteMapping("/cart-items/{cartItemId}")
+    @Operation(summary = "Delete cart item")
     public void deleteCartItem(
             @PathVariable Long cartItemId,
             Authentication authentication
     ) {
         User user = (User) authentication.getPrincipal();
 
-        shoppingCartService.deleteCartItem(user.getId(), cartItemId);
+        shoppingCartService.deleteCartItem(
+                user.getId(),
+                cartItemId
+        );
     }
 }
