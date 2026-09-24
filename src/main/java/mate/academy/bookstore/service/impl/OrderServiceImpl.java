@@ -22,7 +22,6 @@ import mate.academy.bookstore.repository.OrderItemRepository;
 import mate.academy.bookstore.repository.OrderRepository;
 import mate.academy.bookstore.repository.ShoppingCartRepository;
 import mate.academy.bookstore.service.OrderService;
-import mate.academy.bookstore.service.ShoppingCartService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final ShoppingCartRepository shoppingCartRepository;
     private final BookRepository bookRepository;
-    private final ShoppingCartService shoppingCartService;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
 
@@ -97,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        shoppingCartService.clearCart(userId);
+        shoppingCart.clearCart();
 
         return orderMapper.toDto(savedOrder);
     }

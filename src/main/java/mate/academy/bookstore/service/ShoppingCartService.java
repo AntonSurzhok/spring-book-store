@@ -23,7 +23,5 @@ public interface ShoppingCartService {
 
     void deleteCartItem(Long userId, Long cartItemId);
 
-    void clearCart(Long userId);
-
     ShoppingCart createShoppingCart(User user);
 }
