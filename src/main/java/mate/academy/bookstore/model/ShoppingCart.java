@@ -9,27 +9,23 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "shopping_carts")
+@Getter
+@Setter
 public class ShoppingCart {
 
     @Id
     private Long id;
 
-    @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(
-            name = "user_id",
-            nullable = false,
-            unique = true
-    )
+    @MapsId
+    @JoinColumn(name = "id", nullable = false)
     private User user;
 
     @OneToMany(
@@ -38,6 +34,9 @@ public class ShoppingCart {
             orphanRemoval = true,
             fetch = FetchType.LAZY
     )
-    private Set<CartItem> cartItems = new HashSet<>();
+    private List<CartItem> cartItems = new ArrayList<>();
 
+    public void clearCart() {
+        cartItems.clear();
+    }
 }

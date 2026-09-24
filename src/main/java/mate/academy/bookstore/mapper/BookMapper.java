@@ -8,17 +8,25 @@ import mate.academy.bookstore.model.Book;
 import mate.academy.bookstore.model.Category;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface BookMapper {
 
+    @Mapping(target = "categoryIds", ignore = true)
     BookDto toDto(Book book);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "categories", ignore = true)
     Book toEntity(CreateBookRequestDto bookDto);
 
     BookDtoWithoutCategoryIds toDtoWithoutCategories(Book book);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "categories", ignore = true)
     void updateBookFromDto(
             UpdateBookRequestDto requestDto,
             @MappingTarget Book book

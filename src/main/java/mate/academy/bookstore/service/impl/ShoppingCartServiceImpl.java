@@ -1,12 +1,11 @@
 package mate.academy.bookstore.service.impl;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.cart.AddToCartRequestDto;
 import mate.academy.bookstore.dto.cart.ShoppingCartDto;
 import mate.academy.bookstore.dto.cart.UpdateCartItemRequestDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
-import mate.academy.bookstore.mapper.CartItemMapper;
 import mate.academy.bookstore.mapper.ShoppingCartMapper;
 import mate.academy.bookstore.model.Book;
 import mate.academy.bookstore.model.CartItem;
@@ -27,7 +26,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final CartItemRepository cartItemRepository;
     private final BookRepository bookRepository;
     private final ShoppingCartMapper shoppingCartMapper;
-    private final CartItemMapper cartItemMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -67,6 +65,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItem.setQuantity(
                 cartItem.getQuantity() + requestDto.getQuantity()
         );
+
         cartItemRepository.save(cartItem);
 
         return shoppingCartMapper.toDto(shoppingCart);
@@ -113,7 +112,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCart createShoppingCart(User user) {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUser(user);
-        shoppingCart.setCartItems(new HashSet<>());
+        shoppingCart.setCartItems(new ArrayList<>());
 
         return shoppingCartRepository.save(shoppingCart);
     }

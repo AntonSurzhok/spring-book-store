@@ -29,10 +29,7 @@ public class AuthenticationController {
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(
-            summary = "Register a new user",
-            description = "Creates a new user account"
-    )
+    @Operation(summary = "Register a new user")
     public UserResponseDto register(
             @RequestBody @Valid UserRegistrationRequestDto requestDto
     ) {
@@ -40,10 +37,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    @Operation(
-            summary = "Login user",
-            description = "Authenticates user and returns JWT token"
-    )
+    @Operation(summary = "Login user")
     public UserLoginResponseDto login(
             @RequestBody @Valid UserLoginRequestDto request
     ) {
